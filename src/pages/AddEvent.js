@@ -1,11 +1,11 @@
 import AddEventForm from "../components/Events/AddEventForm"
 import Navbar from "../components/Navbar"
 
-const AddEvent = () => {
+const AddEvent = ({ setUpdate }) => {
     return (
         <>
             <Navbar />
-            <AddEventForm />
+            <AddEventForm setUpdate={setUpdate} />
         </>
     )
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const AddEventForm = () => {
+const AddEventForm = ({ setUpdate }) => {
     const navigate = useNavigate();
     const [eventInput, setEventInput] = useState({
         eventName: "",
@@ -55,7 +55,10 @@ const AddEventForm = () => {
 
             try {
                 const res = await axios.post(process.env.REACT_APP_EVENTS, event);
-                if (res.status === 201) navigate("/");
+                if (res.status === 201) {
+                    setUpdate(true);
+                    navigate("/");
+                }
             } catch (error) {
                 console.log(error);
             }
