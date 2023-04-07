@@ -1,19 +1,41 @@
-import { useState } from "react"
-import Navbar from "../components/Navbar"
+import { useState } from "react";
+import axios from "axios";
+import Navbar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-    const [user, setUser] = useState({
+    const navigate = useNavigate();
+    const [newUser, setNewUser] = useState({
         name: "",
         email: "",
         password: "",
     })
+    const [errorMsg, setErrorMsg] = useState("");
 
     const handleInput = (e) => {
         const { name, value } = e.target
-        setUser({
-            ...user,
+        setNewUser({
+            ...newUser,
             [name]: value,
         })
+    }
+
+    const handleSignUp = async (e) => {
+        e.preventDefault();
+
+        const { name, email, password } = newUser;
+
+        if (name && email && password) {
+            try {
+                const res = await axios.post(process.env.REACT_APP_SIGNUP, newUser);
+                setErrorMsg(res.data.message);
+                navigate("/add-event")
+            } catch (error) {
+                console.log(error)
+            }
+        } else {
+            setErrorMsg("Please ensure all fields have valid input")
+        }
     }
 
     return (
@@ -25,7 +47,7 @@ const SignUp = () => {
                     <p className="pt-4 w-2/3 mx-auto">By signing up, you confirm that you are part of the queer ESEA community or an ally, intending to share details of any event you may host or organise that may be relevant for the community.</p>
                 </div>
                 <div className="py-10">
-                    <form className="max-w-4xl w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 mx-auto flex flex-col gap-6 bg-white py-12 px-6 rounded-xl">
+                    <form method="POST" className="max-w-4xl w-5/6 md:w-2/3 lg:w-1/2 xl:w-1/3 mx-auto flex flex-col gap-6 bg-white py-12 px-6 rounded-xl">
                         <div className="w-full mx-auto flex flex-col justify-center">
                             <label
                                 htmlFor="name"
@@ -79,8 +101,13 @@ const SignUp = () => {
                                 required
                             />
                         </div>
+                        {errorMsg && <p className="text-center text-red-500 py-2">{errorMsg}</p>}
                         <div className="w-full flex justify-center mt-4 pt-10 border-t">
-                            <button className="mx-auto bg-indigo-400 text-white font-bold uppercase px-8 py-3 rounded-lg shadow hover:shadow-lg hover:bg-indigo-500 outline-none tracking-wide ease-linear transition-all duration-150">Register</button>
+                            <button className="mx-auto bg-indigo-400 text-white font-bold uppercase px-8 py-3 rounded-lg shadow hover:shadow-lg hover:bg-indigo-500 outline-none tracking-wide ease-linear transition-all duration-150"
+                                onClick={handleSignUp}
+                            >
+                                Sign Up
+                            </button>
                         </div>
                     </form>
                 </div>
