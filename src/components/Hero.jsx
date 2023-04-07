@@ -1,9 +1,7 @@
 import { BsCaretDownFill, BsCaretUp } from "react-icons/bs"
 import { useState } from "react"
-import { useNavigate } from "react-router-dom";
 
 const Hero = ({ events, selectedCity, setSelectedCity }) => {
-    const navigate = useNavigate();
     const [dropdown, setDropdown] = useState(false)
 
     const location = [];
@@ -18,7 +16,7 @@ const Hero = ({ events, selectedCity, setSelectedCity }) => {
 
     const handleCitySelection = (item) => {
         setSelectedCity(item);
-        navigate("/events")
+        setDropdown(false)
     }
 
     return (

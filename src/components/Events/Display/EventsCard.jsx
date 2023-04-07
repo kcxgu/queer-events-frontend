@@ -28,7 +28,7 @@ const EventsCard = ({ organisationName, eventName, description, addressLine1, ad
                     <div className="text-center text-lg lg:text-xl text-gray-500 px-8">{new Date(eventDate).toLocaleString("default", { weekday: "short", day: "numeric", month: "short" })}</div>
                 </div>
 
-                <div className="w-full bg-white py-6 px-8 md:px-12 rounded-xl">
+                <div className="w-full bg-white py-6 px-8 md:px-12 rounded-xl shadow-lg shadow-gray-200">
                     {price === 0 ? (
                         <p className="text-right text-orange-600 font-medium text-xl tracking-wider">FREE</p>
                     ) : (
