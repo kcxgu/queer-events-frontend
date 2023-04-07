@@ -11,7 +11,6 @@ const Navbar = () => {
     const [userLoggedIn, setUserLoggedIn] = useState(false);
 
     const handleAddEvent = () => {
-        // Add check user logic
         if (!userLoggedIn) {
             setAuthModalState({
                 open: true,

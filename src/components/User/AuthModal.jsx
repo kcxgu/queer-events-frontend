@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { authModalState } from "../../atoms/authModal"
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 
 const AuthModal = () => {
+    const navigate = useNavigate();
     const [modalState, setModalState] = useRecoilState(authModalState);
     const [user, setUser] = useState({
         email: "",
@@ -22,6 +24,14 @@ const AuthModal = () => {
             ...user,
             [name]: value,
         })
+    }
+
+    const handleSignUp = () => {
+        setModalState(prev => ({
+            ...prev,
+            open: false,
+        }))
+        navigate("/signup")
     }
 
     return (
@@ -79,7 +89,11 @@ const AuthModal = () => {
                             </div>
                             <div className="flex flex-col items-center justify-center pt-10 pb-6 px-1 border-t boder-slate-200">
                                 <button className="mx-auto bg-violet-400 text-white font-bold uppercase px-8 py-3 rounded-lg shadow hover:shadow-lg hover:opacity-90 outline-none tracking-wide ease-linear transition-all duration-150">Log In</button>
-                                <p className="text-teal-600 text-center pt-5 cursor-pointer hover:underline underline-offset-4 decoration-2 decoration-teal-500">Request to become a member</p>
+                                <p className="text-teal-600 text-center pt-5 cursor-pointer hover:underline underline-offset-4 decoration-2 decoration-teal-500"
+                                    onClick={handleSignUp}
+                                >
+                                    Request to become a member
+                                </p>
                             </div>
                         </form>
                     </div>

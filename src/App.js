@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AddEvent from "./pages/AddEvent";
 import Home from "./pages/Home";
+import SignUp from "./pages/SignUp";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -36,6 +37,7 @@ function App() {
           />
         } />
         <Route path="/add-event" element={<AddEvent setUpdate={setUpdate} />} />
+        <Route path="/signup" element={<SignUp />} />
       </Routes>
     </Router>
   );
