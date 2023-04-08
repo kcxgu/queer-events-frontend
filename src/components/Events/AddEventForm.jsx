@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { userState } from "../../atoms/userAtom";
 import axios from "axios";
+import { authModalState } from "../../atoms/authModal";
 
 const AddEventForm = ({ setUpdate }) => {
     const navigate = useNavigate();
+    const [userStateValue] = useRecoilState(userState);
+    const setAuthModalState = useSetRecoilState(authModalState);
     const [eventInput, setEventInput] = useState({
         eventName: "",
         description: "",
@@ -17,6 +22,13 @@ const AddEventForm = ({ setUpdate }) => {
         eventURL: "",
         price: 0,
     })
+
+    if (!userStateValue.name) {
+        setAuthModalState({
+            open: true,
+            view: "login",
+        })
+    }
 
     const handleInput = (e) => {
         const { name, value } = e.target;
@@ -67,186 +79,193 @@ const AddEventForm = ({ setUpdate }) => {
 
     return (
         <div className="max-w-7xl py-10 md:py-12 lg:py-14 md:mx-auto">
-            <div>
-                <h1 className="text-center text-xl md:text-2xl lg:text-3xl font-medium tracking-wider pt-6 pb-12">Add a new event!</h1>
-            </div>
-            <form className="w-11/12 md:w-4/5 lg:w-2/3 mx-auto flex flex-col gap-6 md:gap-8 bg-white text-gray-700 py-6 md:py-14 px-8 md:px-12 rounded-xl text-lg shadow-lg">
-                <div className="flex flex-col gap-2">
-                    <label
-                        htmlFor="eventName"
-                        className="font-medium text-gray-500"
-                    >
-                        Event Name
-                    </label>
-                    <input
-                        className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                        id="eventName"
-                        name="eventName"
-                        type="text"
-                        placeholder="A Queer Event"
-                        onChange={handleInput}
-                        required
-                    />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label
-                        htmlFor="description"
-                        className="font-medium text-gray-500"
-                    >
-                        Brief Description
-                    </label>
-                    <textarea
-                        className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                        id="description"
-                        name="description"
-                        rows={5}
-                        placeholder="A brief but queer description"
-                        onChange={handleInput}
-                        required
-                    />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label
-                        htmlFor="eventDate"
-                        className="font-medium text-gray-500"
-                    >
-                        Date of Event
-                    </label>
-                    <input
-                        className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                        id="eventDate"
-                        name="eventDate"
-                        type="date"
-                        onChange={handleInput}
-                        required
-                    />
-                </div>
-                <div className="flex flex-row items-center justify-between gap-10">
-                    <div className="w-1/2 flex flex-col gap-2">
-                        <label
-                            htmlFor="startTime"
-                            className="font-medium text-gray-500"
-                        >
-                            Start Time
-                        </label>
-                        <input
-                            className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                            id="startTime"
-                            name="startTime"
-                            type="time"
-                            onChange={handleInput}
-                            required
-                        />
+
+            {userStateValue.name && (
+                <>
+                    <div>
+                        <h1 className="text-center text-xl md:text-2xl lg:text-3xl font-medium tracking-wider">Hey {userStateValue.name}</h1>
+                        <h1 className="text-center text-3xl md:text-4xl lg:text-5xl font-medium tracking-wider pt-6 pb-12">Add a new event!</h1>
                     </div>
-                    <div className="w-1/2 flex flex-col gap-2">
-                        <label
-                            htmlFor="endTime"
-                            className="font-medium text-gray-500"
-                        >
-                            End Time
-                        </label>
-                        <input
-                            className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                            id="endTime"
-                            name="endTime"
-                            type="time"
-                            onChange={handleInput}
-                            required
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-col gap-4">
-                    <label
-                        className="font-medium text-gray-500"
-                    >
-                        Address
-                    </label>
-                    <input
-                        className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                        id="addressLine1"
-                        name="addressLine1"
-                        type="text"
-                        placeholder="Line 1 of Address"
-                        onChange={handleInput}
-                        required
-                    />
-                    <input
-                        className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                        id="addressLine2"
-                        name="addressLine2"
-                        type="text"
-                        placeholder="Line 2 of Address"
-                        onChange={handleInput}
-                    />
-                    <div className="flex flex-row gap-6 md:gap-10">
-                        <input
-                            className="w-1/2 border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                            id="city"
-                            name="city"
-                            type="text"
-                            placeholder="Town/City"
-                            onChange={handleInput}
-                            required
-                        />
-                        <input
-                            className="w-1/2 border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                            id="postcode"
-                            name="postcode"
-                            type="text"
-                            placeholder="Postcode"
-                            onChange={handleInput}
-                            required
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label
-                        htmlFor="eventURL"
-                        className="font-medium text-gray-500"
-                    >
-                        Link to event details or registration
-                    </label>
-                    <input
-                        className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                        id="eventURL"
-                        name="eventURL"
-                        type="url"
-                        placeholder="Event Details URL"
-                        onChange={handleInput}
-                        required
-                    />
-                </div>
-                <div className="flex flex-col gap-2">
-                    <label
-                        htmlFor="price"
-                        className="font-medium text-gray-500"
-                    >
-                        Price
-                    </label>
-                    <div className="flex flex-row items-center gap-2">
-                        <div className="flex flex-row items-center gap-2">
-                            <p className="text-lg px-1 font-medium text-gray-500">£</p>
+                    <form className="w-11/12 md:w-4/5 lg:w-2/3 mx-auto flex flex-col gap-6 md:gap-8 bg-white text-gray-700 py-6 md:py-14 px-8 md:px-12 rounded-xl text-lg shadow-lg">
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="eventName"
+                                className="font-medium text-gray-500"
+                            >
+                                Event Name
+                            </label>
                             <input
-                                className="w-4/5 border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
-                                id="price"
-                                name="price"
-                                type="number"
-                                min={0}
-                                placeholder="5"
+                                className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                id="eventName"
+                                name="eventName"
+                                type="text"
+                                placeholder="A Queer Event"
                                 onChange={handleInput}
                                 required
                             />
                         </div>
-                        <p className="w-full text-gray-500 text-sm sm:text-lg pl-2">Enter 0 if event is free.</p>
-                    </div>
-                </div>
-                <button
-                    className="w-fit mx-auto bg-emerald-700 text-white tracking-wider rounded-lg py-3 px-8 my-4 md:mt-6 font-semibold hover:opacity-90"
-                    onClick={handleSubmit}
-                >
-                    Add Event
-                </button>
-            </form>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="description"
+                                className="font-medium text-gray-500"
+                            >
+                                Brief Description
+                            </label>
+                            <textarea
+                                className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                id="description"
+                                name="description"
+                                rows={5}
+                                placeholder="A brief but queer description"
+                                onChange={handleInput}
+                                required
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="eventDate"
+                                className="font-medium text-gray-500"
+                            >
+                                Date of Event
+                            </label>
+                            <input
+                                className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                id="eventDate"
+                                name="eventDate"
+                                type="date"
+                                onChange={handleInput}
+                                required
+                            />
+                        </div>
+                        <div className="flex flex-row items-center justify-between gap-10">
+                            <div className="w-1/2 flex flex-col gap-2">
+                                <label
+                                    htmlFor="startTime"
+                                    className="font-medium text-gray-500"
+                                >
+                                    Start Time
+                                </label>
+                                <input
+                                    className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                    id="startTime"
+                                    name="startTime"
+                                    type="time"
+                                    onChange={handleInput}
+                                    required
+                                />
+                            </div>
+                            <div className="w-1/2 flex flex-col gap-2">
+                                <label
+                                    htmlFor="endTime"
+                                    className="font-medium text-gray-500"
+                                >
+                                    End Time
+                                </label>
+                                <input
+                                    className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                    id="endTime"
+                                    name="endTime"
+                                    type="time"
+                                    onChange={handleInput}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-4">
+                            <label
+                                className="font-medium text-gray-500"
+                            >
+                                Address
+                            </label>
+                            <input
+                                className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                id="addressLine1"
+                                name="addressLine1"
+                                type="text"
+                                placeholder="Line 1 of Address"
+                                onChange={handleInput}
+                                required
+                            />
+                            <input
+                                className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                id="addressLine2"
+                                name="addressLine2"
+                                type="text"
+                                placeholder="Line 2 of Address"
+                                onChange={handleInput}
+                            />
+                            <div className="flex flex-row gap-6 md:gap-10">
+                                <input
+                                    className="w-1/2 border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                    id="city"
+                                    name="city"
+                                    type="text"
+                                    placeholder="Town/City"
+                                    onChange={handleInput}
+                                    required
+                                />
+                                <input
+                                    className="w-1/2 border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                    id="postcode"
+                                    name="postcode"
+                                    type="text"
+                                    placeholder="Postcode"
+                                    onChange={handleInput}
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="eventURL"
+                                className="font-medium text-gray-500"
+                            >
+                                Link to event details or registration
+                            </label>
+                            <input
+                                className="w-full border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                id="eventURL"
+                                name="eventURL"
+                                type="url"
+                                placeholder="Event Details URL"
+                                onChange={handleInput}
+                                required
+                            />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="price"
+                                className="font-medium text-gray-500"
+                            >
+                                Price
+                            </label>
+                            <div className="flex flex-row items-center gap-2">
+                                <div className="flex flex-row items-center gap-2">
+                                    <p className="text-lg px-1 font-medium text-gray-500">£</p>
+                                    <input
+                                        className="w-4/5 border rounded-lg py-1 px-2 md:py-2 md:px-4 shadow-inner bg-gray-100 focus:bg-white"
+                                        id="price"
+                                        name="price"
+                                        type="number"
+                                        min={0}
+                                        placeholder="5"
+                                        onChange={handleInput}
+                                        required
+                                    />
+                                </div>
+                                <p className="w-full text-gray-500 text-sm sm:text-lg pl-2">Enter 0 if event is free.</p>
+                            </div>
+                        </div>
+                        <button
+                            className="w-fit mx-auto bg-emerald-700 text-white tracking-wider rounded-lg py-3 px-8 my-4 md:mt-6 font-semibold hover:opacity-90"
+                            onClick={handleSubmit}
+                        >
+                            Add Event
+                        </button>
+                    </form>
+                </>
+            )}
+
         </div>
     )
 }

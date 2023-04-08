@@ -2,6 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userState } from "../atoms/userAtom";
 
 const SignUp = () => {
     const navigate = useNavigate();
@@ -10,7 +12,8 @@ const SignUp = () => {
         email: "",
         password: "",
     })
-    const [errorMsg, setErrorMsg] = useState("");
+    const [userStateValue, setUserStateValue] = useRecoilState(userState);
+    const [signUpErrorMsg, setSignUpErrorMsg] = useState("");
 
     const handleInput = (e) => {
         const { name, value } = e.target
@@ -20,21 +23,47 @@ const SignUp = () => {
         })
     }
 
+    const checkErrors = () => {
+        const { name, email, password } = newUser;
+
+        if (name === "") setSignUpErrorMsg("Please enter a name");
+
+        if (email.length < 8) setSignUpErrorMsg("Please enter valid email address");
+
+        if (password.length < 8) setSignUpErrorMsg("Please enter password of at least 8 characters in length");
+
+        if (email.length < 8 && password.length < 8) {
+            setSignUpErrorMsg("Please enter valid email address and password to continue")
+        }
+    }
+
     const handleSignUp = async (e) => {
         e.preventDefault();
 
+        checkErrors();
+
         const { name, email, password } = newUser;
 
-        if (name && email && password) {
+        if (name && email.length >= 8 && password.length >= 8) {
+
+            setSignUpErrorMsg("");
+
             try {
                 const res = await axios.post(process.env.REACT_APP_SIGNUP, newUser);
-                setErrorMsg(res.data.message);
-                navigate("/add-event")
+                if (res.data.message === "Success!") {
+                    setUserStateValue({
+                        name: name,
+                        email: email,
+                    })
+                    navigate("/add-event")
+                } else {
+                    setSignUpErrorMsg(res.data.message);
+                }
             } catch (error) {
                 console.log(error)
             }
         } else {
-            setErrorMsg("Please ensure all fields have valid input")
+            setSignUpErrorMsg("Please ensure all fields have valid input")
         }
     }
 
@@ -101,7 +130,7 @@ const SignUp = () => {
                                 required
                             />
                         </div>
-                        {errorMsg && <p className="text-center text-red-500 py-2">{errorMsg}</p>}
+                        {signUpErrorMsg && <p className="text-center text-red-500 py-2">{signUpErrorMsg}</p>}
                         <div className="w-full flex justify-center mt-4 pt-10 border-t">
                             <button className="mx-auto bg-indigo-400 text-white font-bold uppercase px-8 py-3 rounded-lg shadow hover:shadow-lg hover:bg-indigo-500 outline-none tracking-wide ease-linear transition-all duration-150"
                                 onClick={handleSignUp}

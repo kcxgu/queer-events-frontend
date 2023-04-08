@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { authModalState } from "../../atoms/authModal"
 import { useRecoilState } from "recoil";
+import { userState } from "../../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AuthModal = () => {
     const navigate = useNavigate();
@@ -10,6 +12,8 @@ const AuthModal = () => {
         email: "",
         password: "",
     });
+    const [logInErrorMsg, setLogInErrorMsg] = useState("");
+    const [userStateValue, setUserStateValue] = useRecoilState(userState)
 
     const handleClose = () => {
         setModalState(prev => ({
@@ -32,6 +36,47 @@ const AuthModal = () => {
             open: false,
         }))
         navigate("/signup")
+    }
+
+    const checkErrors = () => {
+        const { email, password } = user;
+
+        if (email.length < 8) setLogInErrorMsg("Please enter valid email address");
+
+        if (password.length < 8) setLogInErrorMsg("Please enter password of at least 8 characters in length");
+
+        if (email.length < 8 && password.length < 8) {
+            setLogInErrorMsg("Please enter valid email address and password to continue")
+        }
+    }
+
+    const handleLogIn = async (e) => {
+        e.preventDefault();
+
+        const { email, password } = user;
+
+        checkErrors();
+
+        if (email.length >= 8 && password.length >= 8) {
+
+            setLogInErrorMsg("");
+
+            const res = await axios.post(process.env.REACT_APP_LOGIN, user)
+
+            if (res.data.message) {
+                setLogInErrorMsg(res.data.message);
+            } else {
+                setUserStateValue({
+                    name: res.data.data.name,
+                    email: res.data.data.email,
+                });
+                setModalState(prev => ({
+                    ...prev,
+                    open: false,
+                }));
+                navigate("/add-event")
+            }
+        }
     }
 
     return (
@@ -87,8 +132,14 @@ const AuthModal = () => {
                                     />
                                 </div>
                             </div>
+                            {logInErrorMsg && <p className="text-center text-red-500 pb-6">{logInErrorMsg}</p>}
                             <div className="flex flex-col items-center justify-center pt-10 pb-6 px-1 border-t boder-slate-200">
-                                <button className="mx-auto bg-violet-400 text-white font-bold uppercase px-8 py-3 rounded-lg shadow hover:shadow-lg hover:opacity-90 outline-none tracking-wide ease-linear transition-all duration-150">Log In</button>
+                                <button
+                                    className="mx-auto bg-violet-400 text-white font-bold uppercase px-8 py-3 rounded-lg shadow hover:shadow-lg hover:opacity-90 outline-none tracking-wide ease-linear transition-all duration-150"
+                                    onClick={handleLogIn}
+                                >
+                                    Log In
+                                </button>
                                 <p className="text-teal-600 text-center pt-5 cursor-pointer hover:underline underline-offset-4 decoration-2 decoration-teal-500"
                                     onClick={handleSignUp}
                                 >
