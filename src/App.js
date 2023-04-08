@@ -4,6 +4,7 @@ import axios from "axios";
 import AddEvent from "./pages/AddEvent";
 import Home from "./pages/Home";
 import SignUp from "./pages/SignUp";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const [events, setEvents] = useState([]);
@@ -38,6 +39,7 @@ function App() {
         } />
         <Route path="/add-event" element={<AddEvent setUpdate={setUpdate} />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/reset-password/:id" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

@@ -12,7 +12,7 @@ const SignUp = () => {
         email: "",
         password: "",
     })
-    const [userStateValue, setUserStateValue] = useRecoilState(userState);
+    const [setUserStateValue] = useRecoilState(userState);
     const [signUpErrorMsg, setSignUpErrorMsg] = useState("");
 
     const handleInput = (e) => {

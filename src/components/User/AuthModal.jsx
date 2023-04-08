@@ -13,7 +13,7 @@ const AuthModal = () => {
         password: "",
     });
     const [logInErrorMsg, setLogInErrorMsg] = useState("");
-    const [setUserStateValue] = useRecoilState(userState);
+    const [userStateValue, setUserStateValue] = useRecoilState(userState);
     const [forgotPassword, setForgotPassword] = useState(false);
     const [forgotPasswordError, setForgotPasswordError] = useState("");
     const [emailSent, setEmailSent] = useState(false);
