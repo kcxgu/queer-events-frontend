@@ -1,6 +1,7 @@
 import { BsCaretDownFill, BsCaretUp } from "react-icons/bs"
-import EventsCard from "./EventsCard"
 import { useState } from "react";
+import axios from "axios";
+import EventsCard from "./EventsCard"
 
 const EventsSchedule = ({ events, selectedMonth, setSelectedMonth }) => {
     const [dropdown, setDropdown] = useState(false);
@@ -11,14 +12,19 @@ const EventsSchedule = ({ events, selectedMonth, setSelectedMonth }) => {
     const futureEvents = [];
 
     events.forEach(item => {
+        const currentDate = new Date().getDate();
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
 
+        const itemDate = new Date(item.eventDate).getDate();
         const itemMonth = new Date(item.eventDate).getMonth();
         const itemYear = new Date(item.eventDate).getFullYear();
 
         if (itemMonth + itemYear === currentMonth + currentYear) {
             eventsThisMonth.push(item);
+            if (itemDate < currentDate) {
+                axios.post(process.env.REACT_APP_REMOVE_EVENT, item)
+            }
         }
 
         if (itemYear >= currentYear && itemMonth > currentMonth) {
@@ -34,7 +40,7 @@ const EventsSchedule = ({ events, selectedMonth, setSelectedMonth }) => {
     return (
         <div className="max-w-7xl mx-auto py-8 md:py-0">
             <div className="w-full max-w-4xl lg:max-w-5xl flex flex-row items-center justify-between px-6 md:px-16 pt-4 pb-6 md:pt-8 md:pb-10">
-                <h3 className="text-2xl md:text-3xl tracking-wide">{new Date().toLocaleString("default", { month: "long", year: "numeric" })}</h3>
+                <h3 className="text-2xl md:text-3xl tracking-wide">Currently: {new Date().toLocaleString("default", { month: "long", year: "numeric" })}</h3>
 
                 {dropdown ? (
                     <div className="relative">
@@ -90,7 +96,10 @@ const EventsSchedule = ({ events, selectedMonth, setSelectedMonth }) => {
                     )}
                 </div>
             ) : (
-                <p className="text-center text-2xl py-8 text-gray-400 font-medium tracking-wider leading-relaxed px-8">There are no events this month</p>
+                <div>
+                    <p className="text-center text-2xl pt-20 pb-8 text-gray-400 font-medium tracking-wider leading-relaxed">(⋟﹏⋞)</p>
+                    <p className="text-center text-2xl pb-8 text-gray-400 font-medium tracking-wider leading-relaxed px-8">There are currently no events in {selectedMonth}</p>
+                </div>
             )}
 
 

@@ -35,8 +35,8 @@ const EventsCard = ({ organisationName, eventName, description, addressLine1, ad
                         <p className="text-right text-blue-500  font-medium text-xl tracking-wide">£{price.toFixed(2)}</p>
                     )}
                     <div className="text-slate-700 font-medium text-lg py-2 tracking-wide">
-                        <div className="w-full flex flex-col md:flex-row md:items-center justify-between pb-1 md:pb-2">
-                            <p className="text-lg md:text-xl">{titleCap(eventName)}</p>
+                        <div className="w-full flex flex-col md:flex-row md:items-center md:gap-0.5 justify-between pb-1 md:pb-2">
+                            <p className="text-lg md:text-xl md:mr-4">{titleCap(eventName)}</p>
 
                             {openModal ? (
                                 <>
