@@ -20,6 +20,7 @@ const AddEventForm = ({ setUpdate }) => {
         eventURL: "",
         price: 0,
     })
+    const [addEventErrorMsg, setAddEventErrorMsg] = useState("");
 
     const handleInput = (e) => {
         const { name, value } = e.target;
@@ -29,17 +30,39 @@ const AddEventForm = ({ setUpdate }) => {
         })
     }
 
+    const checkErrors = () => {
+        const { eventName, description, eventDate, startTime, endTime, addressLine1, city, postcode, eventURL } = eventInput;
+
+        if (eventName.length < 4) setAddEventErrorMsg("Please ensure all fields are completed and are valid");
+
+        if (description.length < 10) setAddEventErrorMsg("Please ensure all fields are completed and are valid");
+
+        if (!eventDate || !startTime || !endTime) setAddEventErrorMsg("Please ensure all fields are completed and are valid");
+
+        if (addressLine1.length < 4) {
+            setAddEventErrorMsg("Please ensure all fields are completed and are valid")
+        }
+        if (city.length < 2) {
+            setAddEventErrorMsg("Please ensure all fields are completed and are valid")
+        }
+        if (postcode.length < 6) {
+            setAddEventErrorMsg("Please ensure all fields are completed and are valid")
+        }
+        if (eventURL.length < 8) {
+            setAddEventErrorMsg("Please ensure all fields are completed and are valid")
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Add Check Errors
+        checkErrors();
 
         const { eventName, description, eventDate, startTime, endTime, addressLine1, addressLine2, city, postcode, eventURL, price } = eventInput;
 
-        if (eventName && description && eventDate && startTime && endTime && addressLine1 && city && postcode && eventURL && price) {
+        if (eventName >= 4 && description >= 10 && eventDate && startTime && endTime && addressLine1 >= 4 && city >= 2 && postcode >= 6 && eventURL >= 8 && price) {
             const date = new Date(eventDate).toISOString();
             const event = {
-                // To take organisation name from user authentication process
                 organisationName: userStateValue.name,
                 eventName: eventName,
                 description: description,
@@ -247,6 +270,7 @@ const AddEventForm = ({ setUpdate }) => {
                                 <p className="w-full text-gray-500 text-sm sm:text-lg pl-2">Enter 0 if event is free.</p>
                             </div>
                         </div>
+                        {addEventErrorMsg && <p className="text-center text-red-500">{addEventErrorMsg}</p>}
                         <button
                             className="w-fit mx-auto bg-emerald-700 text-white tracking-wider rounded-lg py-3 px-8 my-4 md:mt-6 font-semibold hover:opacity-90"
                             onClick={handleSubmit}
