@@ -21,8 +21,9 @@ const Hero = ({ events, selectedCity, setSelectedCity }) => {
 
     return (
         <div className="max-w-7xl mx-auto py-14 px-8 md:py-20 md:px-12">
-            <div className="w-4/5 md:w-2/3 lg:w-1/2 md:p-4 text-3xl md:text-5xl lg:text-5xl text-indigo-400 font-semibold tracking-wide md:text-justify">
-                <h1 className="leading-normal">Upcoming Queer East and Southeast Asian Events In:</h1>
+            <div className="w-4/5 md:p-4 text-3xl md:text-5xl lg:text-5xl text-indigo-400 font-semibold tracking-wide md:text-justify">
+                <h1 className="leading-normal">Upcoming Queer East and</h1>
+                <h1 className="leading-normal pt-2 pb-1 md:py-2">Southeast Asian Events In:</h1>
                 {dropdown ? (
                     <>
                         <div className="relative max-w-max">

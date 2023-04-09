@@ -96,7 +96,7 @@ const EventsSchedule = ({ events, selectedMonth, setSelectedMonth }) => {
                     )}
                 </div>
             ) : (
-                <div>
+                <div className="max-w-5xl">
                     <p className="text-center text-2xl pt-20 pb-8 text-gray-400 font-medium tracking-wider leading-relaxed">(⋟﹏⋞)</p>
                     <p className="text-center text-2xl pb-8 text-gray-400 font-medium tracking-wider leading-relaxed px-8">There are currently no events in {selectedMonth}</p>
                 </div>

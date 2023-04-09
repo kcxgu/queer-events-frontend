@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { userState } from "../../atoms/userAtom";
 import axios from "axios";
-import { authModalState } from "../../atoms/authModal";
 
 const AddEventForm = ({ setUpdate }) => {
     const navigate = useNavigate();
     const [userStateValue] = useRecoilState(userState);
-    const setAuthModalState = useSetRecoilState(authModalState);
     const [eventInput, setEventInput] = useState({
         eventName: "",
         description: "",
@@ -22,13 +20,6 @@ const AddEventForm = ({ setUpdate }) => {
         eventURL: "",
         price: 0,
     })
-
-    if (!userStateValue.name) {
-        setAuthModalState({
-            open: true,
-            view: "login",
-        })
-    }
 
     const handleInput = (e) => {
         const { name, value } = e.target;
@@ -49,7 +40,7 @@ const AddEventForm = ({ setUpdate }) => {
             const date = new Date(eventDate).toISOString();
             const event = {
                 // To take organisation name from user authentication process
-                organisationName: "BAQC ESEA",
+                organisationName: userStateValue.name,
                 eventName: eventName,
                 description: description,
                 eventDate: date,
